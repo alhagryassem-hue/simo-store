@@ -3,39 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر سيمو التقني - الإصدار النهائي</title>
+    <title>Simo Professional Store</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;700&display=swap');
         :root { --gold: #d4af37; --black: #0a0a0a; --white: #ffffff; }
+        
         body { background-color: var(--black); color: var(--white); font-family: 'Cairo', sans-serif; margin: 0; padding: 15px; text-align: center; }
         
-        /* شعار التاج */
-        .ascii-logo { color: var(--gold); font-family: monospace; white-space: pre; font-size: 10px; line-height: 1.2; display: inline-block; margin-top: 20px; }
-        .store-title { font-family: 'Amiri', serif; color: var(--gold); font-size: 2.5rem; margin: 5px 0 20px 0; }
+        /* شعار سيمو */
+        .ascii-logo { color: var(--gold); font-family: monospace; white-space: pre; font-size: 10px; line-height: 1.2; display: inline-block; margin-top: 15px; }
+        .store-title { font-family: 'Amiri', serif; color: var(--gold); font-size: 2.5rem; margin: 5px 0 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         
-        .gold-border { border: 2px solid var(--gold); border-radius: 10px; padding: 15px; margin-bottom: 20px; background: #111; }
-        input, textarea { background: #222; border: 1px solid var(--gold); color: white; padding: 12px; width: 92%; margin: 10px 0; border-radius: 5px; font-family: 'Cairo'; }
+        .gold-border { border: 2px solid var(--gold); border-radius: 12px; padding: 15px; margin-bottom: 20px; background: #111; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+        input, textarea { background: #222; border: 1px solid #444; color: white; padding: 12px; width: 92%; margin: 8px 0; border-radius: 8px; font-family: 'Cairo'; }
         
-        button { background: var(--gold); color: #000; border: none; padding: 12px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; width: 100%; transition: 0.3s; font-size: 16px; }
-        button:hover { background: #fff; }
+        button { background: var(--gold); color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 8px; width: 100%; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #fff; transform: scale(1.01); }
+        button:disabled { background: #555; cursor: wait; }
 
-        /* ستايل قائمة العرض السفلية */
-        .account-card { border: 2px solid var(--gold); padding: 15px; background: #151515; text-align: right; border-radius: 15px; margin-bottom: 30px; position: relative; overflow: hidden; }
-        
-        /* سلايدر الصور */
-        .slider-container { width: 100%; height: 250px; position: relative; overflow: hidden; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
-        .slider-img { width: 100%; height: 100%; object-fit: cover; display: none; cursor: pointer; }
-        .slider-img.active { display: block; animation: fade 0.5s; }
-        
+        /* المعاينة السريعة */
+        .quick-preview { display: flex; overflow-x: auto; gap: 12px; padding: 10px; margin-bottom: 20px; border-bottom: 1px solid #333; }
+        .preview-item { min-width: 90px; border: 1px solid var(--gold); padding: 5px; background: #1a1a1a; border-radius: 8px; font-size: 10px; }
+        .preview-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; }
+
+        /* السلايدر */
+        .slider-container { width: 100%; height: 280px; position: relative; overflow: hidden; border-radius: 10px; margin: 10px 0; background: #000; border: 1px solid #333; }
+        .slider-img { width: 100%; height: 100%; object-fit: contain; display: none; position: absolute; top: 0; left: 0; cursor: pointer; }
+        .slider-img.active { display: block; animation: fade 0.8s ease-in-out; }
         @keyframes fade { from {opacity: 0.4} to {opacity: 1} }
 
-        .badge { background: var(--gold); color: black; padding: 4px 12px; border-radius: 5px; font-size: 14px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
-        .buy-btn { background: #25d366; color: white; margin-top: 15px; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .buy-btn:hover { background: #128c7e; color: white; }
-
-        .quick-preview { display: flex; overflow-x: auto; gap: 15px; padding: 10px; margin-bottom: 20px; }
-        .preview-item { min-width: 90px; border: 1px solid var(--gold); padding: 5px; background: #1a1a1a; border-radius: 8px; font-size: 11px; }
-        .preview-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; }
+        /* بطاقة الحساب */
+        .account-card { border: 1px solid var(--gold); padding: 15px; background: #151515; text-align: right; border-radius: 15px; margin-bottom: 30px; }
+        .badge { background: var(--gold); color: black; padding: 4px 12px; border-radius: 5px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .buy-btn { background: #25d366; color: white; display: block; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: 15px; font-size: 18px; }
+        
+        #statusText { color: var(--gold); font-size: 14px; margin-bottom: 10px; display: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -49,154 +51,137 @@
       \/ \/ \/ \/
         SIMO
     </div>
-
-    <h1 class="store-title">متجر سيمو التقني</h1>
+    <h1 class="store-title">متجر سيمو الاحترافي</h1>
 
     <div class="gold-border">
         <input type="text" id="searchId" placeholder="🔍 ابحث عن ID الحساب...">
-        <button onclick="searchAcc()">بحث في المتجر</button>
+        <button onclick="searchAcc()">بحث سريع</button>
     </div>
 
-    <h3 style="color:var(--gold)">المعاينة السريعة</h3>
     <div id="quickPreview" class="quick-preview"></div>
 
     <div class="gold-border">
-        <h3 style="color:var(--gold)">نشر حساب جديد</h3>
+        <h3 style="color:var(--gold); margin-top:0;">نشر حساب (رفع تلقائي)</h3>
         <input type="text" id="accID" placeholder="ID الحساب">
-        <input type="text" id="accRank" placeholder="الرنك (ليفل، تصنيف..)">
-        <label style="color:var(--gold); font-size: 13px;">يمكنك اختيار حتى 5 صور:</label>
-        <input type="file" id="photos" accept="image/*" multiple>
+        <input type="text" id="accRank" placeholder="المستوى / الرنك">
         <textarea id="desc" rows="3" placeholder="وصف الحساب..."></textarea>
-        <input type="number" id="adminNumber" placeholder="رقم المشرف">
-        <input type="password" id="verifyPin" placeholder="الرمز السرّي (2026)">
-        <button id="pubBtn" onclick="publish()">نشر الحساب</button>
+        <input type="file" id="photos" accept="image/*" multiple>
+        <input type="number" id="adminNum" placeholder="رقم المشرف">
+        <input type="password" id="verifyPin" placeholder="الرمز السري (2026)">
+        <div id="statusText">جاري المعالجة...</div>
+        <button id="pubBtn" onclick="handlePublish()">نشر العرض الآن</button>
     </div>
 
-    <div id="mainDisplay">جاري جلب العروض...</div>
+    <hr style="border: 0.5px solid #333; margin: 30px 0;">
+    <div id="mainDisplay">جاري التحميل...</div>
 
     <script>
-        const API_URL = "https://api.jsonbin.io/v3/b/661ea769ad19ca34f85a643b";
-        const KEY = "$2a$10$Y7G3.oYg.W/A0bE.G4yMkeG8Q/uJjP7X6M0XU8y7vI6V2fG3R5G";
-        const ADMINS = ["784090897", "784724880", "773614204", "784137737"];
-        const MY_WHATSAPP = "9677XXXXXXXX"; // ضع رقمك هنا ليبدأ الزبائن بمراسلتك
+        // إعدادات Firebase والمسؤولين
+        const DB_URL = "https://simo-store-default-rtdb.firebaseio.com/accounts.json";
+        const ADMINS = ["784090897", "784724880", "773614204", "784137737"]; //
+        const WHATSAPP = "967773614204"; //
+
+        async function handlePublish() {
+            const pin = document.getElementById('verifyPin').value;
+            const num = document.getElementById('adminNum').value;
+            const files = document.getElementById('photos').files;
+            
+            if(!ADMINS.includes(num) || pin !== "2026") return alert("بيانات المشرف غير صحيحة!"); //
+            if(files.length === 0 || files.length > 5) return alert("اختر من 1 لـ 5 صور");
+
+            const btn = document.getElementById('pubBtn');
+            const status = document.getElementById('statusText');
+            btn.disabled = true; status.style.display = "block";
+            
+            try {
+                let uploadedUrls = [];
+                for(let i=0; i < files.length; i++) {
+                    status.innerText = `جاري الرفع (${i+1}/${files.length})...`;
+                    let formData = new FormData();
+                    formData.append("image", files[i]);
+
+                    // استخدام Imgur للرفع لتجنب الحجب
+                    let res = await fetch("https://api.imgur.com/3/image", {
+                        method: "POST",
+                        headers: { Authorization: "Client-ID 546c25a59c58ad7" },
+                        body: formData
+                    });
+                    let out = await res.json();
+                    if(out.success) uploadedUrls.push(out.data.link);
+                }
+
+                await fetch(DB_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: document.getElementById('accID').value,
+                        rank: document.getElementById('accRank').value,
+                        desc: document.getElementById('desc').value,
+                        imgs: uploadedUrls,
+                        admin: num,
+                        date: Date.now()
+                    })
+                });
+
+                alert("تم النشر بنجاح!");
+                location.reload();
+            } catch (e) {
+                alert("خطأ في الرفع. جرب استخدام VPN.");
+                btn.disabled = false; status.style.display = "none";
+            }
+        }
 
         async function loadData() {
             try {
-                const res = await fetch(API_URL, { headers: { "X-Master-Key": KEY } });
+                const res = await fetch(DB_URL);
                 const data = await res.json();
-                render(data.record.accounts || []);
-            } catch (e) { document.getElementById('mainDisplay').innerHTML = "فشل التحميل."; }
-        }
+                const display = document.getElementById('mainDisplay');
+                const preview = document.getElementById('quickPreview');
+                display.innerHTML = ''; preview.innerHTML = '';
+                if(!data) return display.innerHTML = "لا توجد عروض.";
 
-        async function compressImage(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        canvas.width = 600; canvas.height = (img.height / img.width) * 600;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6));
-                    };
-                };
-            });
-        }
+                const list = Object.keys(data).map(key => data[key]).reverse();
+                list.forEach((acc, index) => {
+                    const imgs = acc.imgs || [];
+                    preview.innerHTML += `<div class="preview-item"><img src="${imgs[0]}"><br>ID: ${acc.id}</div>`;
 
-        async function publish() {
-            const num = document.getElementById('adminNumber').value;
-            const pin = document.getElementById('verifyPin').value;
-            if(!ADMINS.includes(num) || pin !== "2026") return alert("خطأ في البيانات!");
+                    let imgsHtml = '';
+                    imgs.forEach((url, i) => {
+                        imgsHtml += `<img src="${url}" class="slider-img s-${index} ${i===0?'active':''}" onclick="window.open(this.src)">`;
+                    });
 
-            const files = document.getElementById('photos').files;
-            if(files.length === 0 || files.length > 5) return alert("اختر من 1 لـ 5 صور!");
-
-            const btn = document.getElementById('pubBtn');
-            btn.disabled = true; btn.innerText = "جاري الرفع...";
-
-            try {
-                const imgs = [];
-                for(let f of files) imgs.push(await compressImage(f));
-
-                const res = await fetch(API_URL, { headers: { "X-Master-Key": KEY } });
-                const current = await res.json();
-                const list = current.record.accounts || [];
-
-                list.push({
-                    id: document.getElementById('accID').value,
-                    rank: document.getElementById('accRank').value,
-                    desc: document.getElementById('desc').value,
-                    imgs: imgs,
-                    admin: num
+                    display.innerHTML += `
+                        <div class="account-card" id="card-${acc.id}">
+                            <span class="badge">💎 ${acc.rank}</span>
+                            <div class="slider-container">${imgsHtml}</div>
+                            <h3>ID: ${acc.id}</h3>
+                            <p style="white-space: pre-wrap; color:#ccc;">${acc.desc}</p>
+                            <a class="buy-btn" href="https://wa.me/${WHATSAPP}?text=شراء الحساب ID:${acc.id}">💬 تواصل للشراء</a>
+                        </div>`;
+                    if(imgs.length > 1) startSlider(index);
                 });
-
-                await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: { "Content-Type": "application/json", "X-Master-Key": KEY },
-                    body: JSON.stringify({ accounts: list })
-                });
-
-                alert("تم النشر!"); location.reload();
-            } catch (e) { alert("خطأ!"); btn.disabled = false; }
+            } catch (e) { display.innerHTML = "خطأ في جلب البيانات."; }
         }
 
-        function render(list) {
-            const display = document.getElementById('mainDisplay');
-            const preview = document.getElementById('quickPreview');
-            display.innerHTML = ''; preview.innerHTML = '';
-
-            list.reverse().forEach((acc, index) => {
-                const firstImg = acc.imgs ? acc.imgs[0] : acc.img;
-                preview.innerHTML += `<div class="preview-item"><img src="${firstImg}"><br>ID: ${acc.id}</div>`;
-
-                let imgsHtml = '';
-                const images = acc.imgs || [acc.img];
-                images.forEach((src, i) => {
-                    imgsHtml += `<img src="${src}" class="slider-img img-${index} ${i===0?'active':''}" onclick="window.open(this.src)">`;
-                });
-
-                display.innerHTML += `
-                    <div class="account-card" id="card-${acc.id}">
-                        <span class="badge">💎 الرنك: ${acc.rank}</span>
-                        <div class="slider-container">${imgsHtml}</div>
-                        <h3 style="color:var(--gold); margin:5px 0;">ID: ${acc.id}</h3>
-                        <p style="white-space: pre-line; font-size:14px; color:#ddd;">${acc.desc}</p>
-                        <button class="buy-btn" onclick="buyAcc('${acc.id}')">
-                            💬 شراء الحساب الآن
-                        </button>
-                    </div>`;
-                
-                startSlider(index);
-            });
-        }
-
-        function startSlider(cardIdx) {
-            let current = 0;
-            const imgs = document.querySelectorAll(`.img-${cardIdx}`);
-            if(imgs.length <= 1) return;
+        function startSlider(idx) {
+            let cur = 0;
             setInterval(() => {
-                imgs[current].classList.remove('active');
-                current = (current + 1) % imgs.length;
-                imgs[current].classList.add('active');
-            }, 3000); // تغيير الصورة كل 3 ثوانٍ
-        }
-
-        function buyAcc(id) {
-            const msg = encodeURIComponent(`أهلاً متجر سيمو، أريد شراء الحساب صاحب الـ ID: ${id}`);
-            window.open(`https://wa.me/${MY_WHATSAPP}?text=${msg}`);
+                const slides = document.querySelectorAll(`.s-${idx}`);
+                if(!slides.length) return;
+                slides[cur].classList.remove('active');
+                cur = (cur + 1) % slides.length;
+                slides[cur].classList.add('active');
+            }, 3000);
         }
 
         function searchAcc() {
-            const sId = document.getElementById('searchId').value.trim();
-            const el = document.getElementById(`card-${sId}`);
+            const sid = document.getElementById('searchId').value.trim();
+            const el = document.getElementById(`card-${sid}`);
             if(el) el.scrollIntoView({behavior: "smooth", block: "center"});
-            else alert("غير موجود!");
+            else alert("ID غير موجود.");
         }
 
         loadData();
     </script>
 </body>
 </html>
+
