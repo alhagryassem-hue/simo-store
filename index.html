@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simo Professional Store</title>
+    <title>متجر سيمو الاحترافي</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;700&display=swap');
         :root { --gold: #d4af37; --black: #0a0a0a; --white: #ffffff; }
         
         body { background-color: var(--black); color: var(--white); font-family: 'Cairo', sans-serif; margin: 0; padding: 15px; text-align: center; }
         
-        /* شعار سيمو */
         .ascii-logo { color: var(--gold); font-family: monospace; white-space: pre; font-size: 10px; line-height: 1.2; display: inline-block; margin-top: 15px; }
         .store-title { font-family: 'Amiri', serif; color: var(--gold); font-size: 2.5rem; margin: 5px 0 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         
@@ -21,18 +20,15 @@
         button:hover { background: #fff; transform: scale(1.01); }
         button:disabled { background: #555; cursor: wait; }
 
-        /* المعاينة السريعة */
         .quick-preview { display: flex; overflow-x: auto; gap: 12px; padding: 10px; margin-bottom: 20px; border-bottom: 1px solid #333; }
         .preview-item { min-width: 90px; border: 1px solid var(--gold); padding: 5px; background: #1a1a1a; border-radius: 8px; font-size: 10px; }
         .preview-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; }
 
-        /* السلايدر */
         .slider-container { width: 100%; height: 280px; position: relative; overflow: hidden; border-radius: 10px; margin: 10px 0; background: #000; border: 1px solid #333; }
         .slider-img { width: 100%; height: 100%; object-fit: contain; display: none; position: absolute; top: 0; left: 0; cursor: pointer; }
         .slider-img.active { display: block; animation: fade 0.8s ease-in-out; }
         @keyframes fade { from {opacity: 0.4} to {opacity: 1} }
 
-        /* بطاقة الحساب */
         .account-card { border: 1px solid var(--gold); padding: 15px; background: #151515; text-align: right; border-radius: 15px; margin-bottom: 30px; }
         .badge { background: var(--gold); color: black; padding: 4px 12px; border-radius: 5px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
         .buy-btn { background: #25d366; color: white; display: block; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: 15px; font-size: 18px; }
@@ -76,17 +72,17 @@
     <div id="mainDisplay">جاري التحميل...</div>
 
     <script>
-        // إعدادات Firebase والمسؤولين
-        const DB_URL = "https://simo-store-default-rtdb.firebaseio.com/accounts.json";
-        const ADMINS = ["784090897", "784724880", "773614204", "784137737"]; //
-        const WHATSAPP = "967773614204"; //
+        // الرابط الجديد بناءً على صورتك لـ Firebase
+        const DB_URL = "https://simo-store-f0083-default-rtdb.firebaseio.com/accounts.json";
+        const ADMINS = ["784137737", "7736314204", "784090897", "784724880"]; 
+        const WHATSAPP = "967773614204"; 
 
         async function handlePublish() {
             const pin = document.getElementById('verifyPin').value;
             const num = document.getElementById('adminNum').value;
             const files = document.getElementById('photos').files;
             
-            if(!ADMINS.includes(num) || pin !== "2026") return alert("بيانات المشرف غير صحيحة!"); //
+            if(!ADMINS.includes(num) || pin !== "2026") return alert("بيانات المشرف غير صحيحة!"); 
             if(files.length === 0 || files.length > 5) return alert("اختر من 1 لـ 5 صور");
 
             const btn = document.getElementById('pubBtn');
@@ -100,7 +96,6 @@
                     let formData = new FormData();
                     formData.append("image", files[i]);
 
-                    // استخدام Imgur للرفع لتجنب الحجب
                     let res = await fetch("https://api.imgur.com/3/image", {
                         method: "POST",
                         headers: { Authorization: "Client-ID 546c25a59c58ad7" },
@@ -125,7 +120,7 @@
                 alert("تم النشر بنجاح!");
                 location.reload();
             } catch (e) {
-                alert("خطأ في الرفع. جرب استخدام VPN.");
+                alert("خطأ في الرفع. تأكد من الإنترنت أو جرب VPN.");
                 btn.disabled = false; status.style.display = "none";
             }
         }
@@ -137,7 +132,7 @@
                 const display = document.getElementById('mainDisplay');
                 const preview = document.getElementById('quickPreview');
                 display.innerHTML = ''; preview.innerHTML = '';
-                if(!data) return display.innerHTML = "لا توجد عروض.";
+                if(!data) return display.innerHTML = "لا توجد عروض حالياً.";
 
                 const list = Object.keys(data).map(key => data[key]).reverse();
                 list.forEach((acc, index) => {
@@ -184,4 +179,3 @@
     </script>
 </body>
 </html>
-
