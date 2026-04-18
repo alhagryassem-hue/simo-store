@@ -3,160 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر سيمو الاحترافي</title>
+    <title>Simo Pro Store - Supabase Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;700&display=swap');
-        :root { --gold: #d4af37; --black: #0a0a0a; --white: #ffffff; }
+        :root { --gold: #d4af37; --black: #0a0a0a; --white: #ffffff; --green: #25d366; }
         
-        body { background-color: var(--black); color: var(--white); font-family: 'Cairo', sans-serif; margin: 0; padding: 15px; text-align: center; }
+        body { background-color: var(--black); color: var(--white); font-family: 'Cairo', sans-serif; margin: 0; padding: 15px; text-align: center; overflow-x: hidden; }
         
-        .ascii-logo { color: var(--gold); font-family: monospace; white-space: pre; font-size: 10px; line-height: 1.2; display: inline-block; margin-top: 15px; }
-        .store-title { font-family: 'Amiri', serif; color: var(--gold); font-size: 2.5rem; margin: 5px 0 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        /* الهيدر والشعار */
+        .ascii-logo { color: var(--gold); font-family: monospace; cursor: pointer; user-select: none; margin-top: 15px; transition: 0.3s; }
+        .store-title { font-family: 'Amiri', serif; color: var(--gold); font-size: 2.5rem; margin: 5px 0 20px 0; }
         
-        .gold-border { border: 2px solid var(--gold); border-radius: 12px; padding: 15px; margin-bottom: 20px; background: #111; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
-        input, textarea { background: #222; border: 1px solid #444; color: white; padding: 12px; width: 92%; margin: 8px 0; border-radius: 8px; font-family: 'Cairo'; }
+        /* البحث */
+        .search-box { border: 2px solid var(--gold); border-radius: 12px; padding: 15px; margin-bottom: 20px; background: #111; display: flex; gap: 8px; }
+        input, textarea { background: #1a1a1a; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; font-family: 'Cairo'; outline: none; width: 100%; box-sizing: border-box; }
+        input#searchId { flex: 1; }
         
-        button { background: var(--gold); color: #000; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 8px; width: 100%; font-size: 16px; transition: 0.3s; }
-        button:hover { background: #fff; transform: scale(1.01); }
-        button:disabled { background: #555; cursor: wait; }
+        button { background: var(--gold); color: #000; border: none; padding: 12px 20px; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        button:hover { background: #fff; transform: scale(1.05); }
 
-        .quick-preview { display: flex; overflow-x: auto; gap: 12px; padding: 10px; margin-bottom: 20px; border-bottom: 1px solid #333; }
-        .preview-item { min-width: 90px; border: 1px solid var(--gold); padding: 5px; background: #1a1a1a; border-radius: 8px; font-size: 10px; }
+        /* لوحة التحكم */
+        #adminPanel { display: none; background: #151515; border: 2px dashed var(--gold); padding: 20px; margin: 20px 0; border-radius: 15px; animation: slideIn 0.5s; }
+        @keyframes slideIn { from {opacity:0; transform:translateY(-20px)} to {opacity:1; transform:translateY(0)} }
+
+        /* شريط المعاينة السريعة العلوي */
+        .quick-preview { display: flex; overflow-x: auto; gap: 12px; padding: 10px; margin-bottom: 25px; border-bottom: 1px solid #222; scrollbar-width: none; }
+        .preview-item { min-width: 90px; border: 1px solid #333; padding: 5px; background: #111; border-radius: 8px; font-size: 10px; cursor: pointer; transition: 0.3s; }
         .preview-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; }
+        .preview-item:hover { border-color: var(--gold); }
 
-        .slider-container { width: 100%; height: 280px; position: relative; overflow: hidden; border-radius: 10px; margin: 10px 0; background: #000; border: 1px solid #333; }
-        .slider-img { width: 100%; height: 100%; object-fit: contain; display: none; position: absolute; top: 0; left: 0; cursor: pointer; }
-        .slider-img.active { display: block; animation: fade 0.8s ease-in-out; }
-        @keyframes fade { from {opacity: 0.4} to {opacity: 1} }
+        /* السلايدر */
+        .slider-container { width: 100%; height: 320px; position: relative; overflow: hidden; border-radius: 12px; margin: 15px 0; background: #000; border: 1px solid #222; }
+        .slider-img { width: 100%; height: 100%; object-fit: contain; display: none; position: absolute; top: 0; left: 0; cursor: pointer; transition: 0.5s; }
+        .slider-img.active { display: block; animation: fade 0.5s; }
+        @keyframes fade { from {opacity: 0.7} to {opacity: 1} }
 
-        .account-card { border: 1px solid var(--gold); padding: 15px; background: #151515; text-align: right; border-radius: 15px; margin-bottom: 30px; }
-        .badge { background: var(--gold); color: black; padding: 4px 12px; border-radius: 5px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
-        .buy-btn { background: #25d366; color: white; display: block; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: 15px; font-size: 18px; }
+        /* بطاقة الحساب */
+        .account-card { border: 1px solid #222; padding: 25px; background: #0d0d0d; text-align: right; border-radius: 18px; margin-bottom: 35px; position: relative; transition: 0.3s; }
+        .account-card:hover { border-color: var(--gold); box-shadow: 0 5px 20px rgba(212, 175, 55, 0.1); }
+        .badge { background: var(--gold); color: black; padding: 5px 15px; border-radius: 5px; font-weight: bold; position: absolute; top: -12px; right: 20px; }
         
-        #statusText { color: var(--gold); font-size: 14px; margin-bottom: 10px; display: none; font-weight: bold; }
+        .buy-btn { background: var(--green); color: white; display: block; text-decoration: none; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; margin-top: 15px; font-size: 1.1rem; }
+        
+        #statusText { color: var(--gold); margin: 10px 0; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="ascii-logo">
-         _  _
-        ( \/ )
-     _   )  (   _
-    ( \_/ /\ \_/ )
-     \  _/_ \_  /
-      \/ \/ \/ \/
-        SIMO
+    <div class="ascii-logo" onclick="checkAdminClick()">
+       <h1 style="letter-spacing: 2px;"> 🇸‌🇮‌🇲‌🇴-‌🇸‌🇹‌🇴‌🇷‌🇪 </h1>
     </div>
     <h1 class="store-title">متجر سيمو الاحترافي</h1>
 
-    <div class="gold-border">
-        <input type="text" id="searchId" placeholder="🔍 ابحث عن ID الحساب...">
-        <button onclick="searchAcc()">بحث سريع</button>
+    <div class="search-box">
+        <input type="text" id="searchId" placeholder="🔍 ابحث برقم الـ ID...">
+        <button onclick="searchAcc()">بحث</button>
+    </div>
+
+    <div id="adminPanel">
+        <h3 style="color:var(--gold);">🛠 لوحة إدارة المتجر (Supabase)</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="text" id="accID" placeholder="ID الحساب">
+            <input type="text" id="accRank" placeholder="الرتبة / التقييم">
+            <textarea id="desc" rows="3" placeholder="وصف الحساب بالتفصيل..."></textarea>
+            <input type="file" id="photos" accept="image/*" multiple>
+            <input type="password" id="verifyPin" placeholder="الرمز السري للنشر">
+            <div id="statusText">جاري المعالجة...</div>
+            <button id="pubBtn" onclick="handlePublish()">نشر العرض الآن</button>
+        </div>
     </div>
 
     <div id="quickPreview" class="quick-preview"></div>
 
-    <div class="gold-border">
-        <h3 style="color:var(--gold); margin-top:0;">نشر حساب (رفع تلقائي)</h3>
-        <input type="text" id="accID" placeholder="ID الحساب">
-        <input type="text" id="accRank" placeholder="المستوى / الرنك">
-        <textarea id="desc" rows="3" placeholder="وصف الحساب..."></textarea>
-        <input type="file" id="photos" accept="image/*" multiple>
-        <input type="number" id="adminNum" placeholder="رقم المشرف">
-        <input type="password" id="verifyPin" placeholder="الرمز السري (2026)">
-        <div id="statusText">جاري المعالجة...</div>
-        <button id="pubBtn" onclick="handlePublish()">نشر العرض الآن</button>
-    </div>
-
-    <hr style="border: 0.5px solid #333; margin: 30px 0;">
-    <div id="mainDisplay">جاري التحميل...</div>
+    <div id="mainDisplay">جاري فحص العروض...</div>
 
     <script>
-        // الرابط الجديد بناءً على صورتك لـ Firebase
-        const DB_URL = "https://simo-store-f0083-default-rtdb.firebaseio.com/accounts.json";
-        const ADMINS = ["784137737", "7736314204", "784090897", "784724880"]; 
-        const WHATSAPP = "967773614204"; 
+        // --- إعدادات الربط المدمجة الخاصة بك ---
+        const SUPABASE_URL = 'https://ljgyrupvwklehopznkj.supabase.co';
+        const SUPABASE_KEY = 'Sb_publishable_MbnFnG8ftXi4VID7Rbti1A_WU_Q07CG';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        const WHATSAPP = "967773614204";
+        const IMGUR_CLIENT_ID = "546c25a59c58ad7";
+        let clickCount = 0;
+
+        // ميزة الدخول للوحة التحكم (5 ضغطات)
+        function checkAdminClick() {
+            clickCount++;
+            if(clickCount === 5) {
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminPanel').scrollIntoView({behavior: "smooth"});
+                alert("مرحباً سيمو، تم تفعيل لوحة الإدارة!");
+            }
+        }
+
+        // ميزة النشر لـ Supabase ورفع الصور لـ Imgur
         async function handlePublish() {
             const pin = document.getElementById('verifyPin').value;
-            const num = document.getElementById('adminNum').value;
             const files = document.getElementById('photos').files;
-            
-            if(!ADMINS.includes(num) || pin !== "2026") return alert("بيانات المشرف غير صحيحة!"); 
-            if(files.length === 0 || files.length > 5) return alert("اختر من 1 لـ 5 صور");
-
             const btn = document.getElementById('pubBtn');
             const status = document.getElementById('statusText');
-            btn.disabled = true; status.style.display = "block";
+
+            if(pin !== "2026") return alert("الرمز خطأ!");
+            if(files.length === 0) return alert("يرجى اختيار صور!");
+
+            btn.disabled = true;
+            status.style.display = "block";
             
             try {
                 let uploadedUrls = [];
                 for(let i=0; i < files.length; i++) {
-                    status.innerText = `جاري الرفع (${i+1}/${files.length})...`;
+                    status.innerText = `جاري رفع صورة (${i+1}/${files.length})...`;
                     let formData = new FormData();
                     formData.append("image", files[i]);
-
                     let res = await fetch("https://api.imgur.com/3/image", {
                         method: "POST",
-                        headers: { Authorization: "Client-ID 546c25a59c58ad7" },
+                        headers: { Authorization: `Client-ID ${IMGUR_CLIENT_ID}` },
                         body: formData
                     });
                     let out = await res.json();
                     if(out.success) uploadedUrls.push(out.data.link);
                 }
 
-                await fetch(DB_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        id: document.getElementById('accID').value,
+                const { error } = await supabaseClient
+                    .from('accounts')
+                    .insert([{ 
+                        id_acc: document.getElementById('accID').value,
                         rank: document.getElementById('accRank').value,
-                        desc: document.getElementById('desc').value,
-                        imgs: uploadedUrls,
-                        admin: num,
-                        date: Date.now()
-                    })
-                });
+                        description: document.getElementById('desc').value,
+                        image_urls: uploadedUrls
+                    }]);
 
-                alert("تم النشر بنجاح!");
+                if (error) throw error;
+                alert("تم بنجاح! العرض متاح الآن للجميع.");
                 location.reload();
             } catch (e) {
-                alert("خطأ في الرفع. تأكد من الإنترنت أو جرب VPN.");
-                btn.disabled = false; status.style.display = "none";
+                alert("خطأ: " + e.message);
+                btn.disabled = false;
+                status.style.display = "none";
             }
         }
 
+        // جلب البيانات مع ميزة الترتيب والمعاينة العلوية
         async function loadData() {
             try {
-                const res = await fetch(DB_URL);
-                const data = await res.json();
+                const { data, error } = await supabaseClient
+                    .from('accounts')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
                 const display = document.getElementById('mainDisplay');
                 const preview = document.getElementById('quickPreview');
                 display.innerHTML = ''; preview.innerHTML = '';
-                if(!data) return display.innerHTML = "لا توجد عروض حالياً.";
+                
+                if(!data || data.length === 0) return display.innerHTML = "لا توجد عروض حالياً.";
 
-                const list = Object.keys(data).map(key => data[key]).reverse();
-                list.forEach((acc, index) => {
-                    const imgs = acc.imgs || [];
-                    preview.innerHTML += `<div class="preview-item"><img src="${imgs[0]}"><br>ID: ${acc.id}</div>`;
+                data.forEach((acc, index) => {
+                    const imgs = acc.image_urls || [];
+                    
+                    // المعاينة العلوية
+                    preview.innerHTML += `
+                        <div class="preview-item" onclick="searchAcc('${acc.id_acc}')">
+                            <img src="${imgs[0]}"><br>ID: ${acc.id_acc}
+                        </div>`;
 
+                    // بناء السلايدر
                     let imgsHtml = '';
                     imgs.forEach((url, i) => {
-                        imgsHtml += `<img src="${url}" class="slider-img s-${index} ${i===0?'active':''}" onclick="window.open(this.src)">`;
+                        imgsHtml += `<img src="${url}" class="slider-img s-${index} ${i===0?'active':''}" onclick="window.open('${url}')">`;
                     });
 
+                    // بطاقة الحساب
                     display.innerHTML += `
-                        <div class="account-card" id="card-${acc.id}">
+                        <div class="account-card" id="card-${acc.id_acc}">
                             <span class="badge">💎 ${acc.rank}</span>
                             <div class="slider-container">${imgsHtml}</div>
-                            <h3>ID: ${acc.id}</h3>
-                            <p style="white-space: pre-wrap; color:#ccc;">${acc.desc}</p>
-                            <a class="buy-btn" href="https://wa.me/${WHATSAPP}?text=شراء الحساب ID:${acc.id}">💬 تواصل للشراء</a>
+                            <h3>ID الحساب: ${acc.id_acc}</h3>
+                            <p style="white-space: pre-wrap; color:#ccc;">${acc.description}</p>
+                            <a class="buy-btn" href="https://wa.me/${WHATSAPP}?text=شراء الحساب ID:${acc.id_acc}">💬 تواصل للشراء واتساب</a>
                         </div>`;
+                    
                     if(imgs.length > 1) startSlider(index);
                 });
-            } catch (e) { display.innerHTML = "خطأ في جلب البيانات."; }
+            } catch (e) {
+                document.getElementById('mainDisplay').innerHTML = "حدث خطأ أثناء تحميل البيانات.";
+            }
         }
 
+        // ميزة السلايدر التلقائي
         function startSlider(idx) {
             let cur = 0;
             setInterval(() => {
@@ -165,17 +201,23 @@
                 slides[cur].classList.remove('active');
                 cur = (cur + 1) % slides.length;
                 slides[cur].classList.add('active');
-            }, 3000);
+            }, 3500);
         }
 
-        function searchAcc() {
-            const sid = document.getElementById('searchId').value.trim();
+        // ميزة البحث والتنقل السلس
+        function searchAcc(idFromPreview = null) {
+            const sid = idFromPreview || document.getElementById('searchId').value.trim();
             const el = document.getElementById(`card-${sid}`);
-            if(el) el.scrollIntoView({behavior: "smooth", block: "center"});
-            else alert("ID غير موجود.");
+            if(el) {
+                el.scrollIntoView({behavior: "smooth", block: "center"});
+                el.style.border = "2px solid var(--gold)";
+                setTimeout(() => el.style.border = "1px solid #222", 2000);
+            } else if(!idFromPreview) {
+                alert("ID الحساب غير موجود.");
+            }
         }
 
-        loadData();
+        window.onload = loadData;
     </script>
 </body>
 </html>
